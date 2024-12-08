@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>🎄 Christmas Calendar 2000s Style! 🎅</title>
+    <link rel="stylesheet" href="style.css" />
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/javascript">
+(function() {
+    const e = React.createElement;
+    const { useState, useEffect } = React;
+    
+    const startDay = 8;
+    const endDay = 12;
+    const totalDays = endDay - startDay + 1;
+    
+    const now = new Date();
+    const currentDay = now.getMonth() === 11 ? now.getDate() : 0;
+
+    function DayBox({ dayNumber, isUnlocked, onClick }) {
+        const handleClick = () => {
+            if(isUnlocked && onClick) {
+                onClick(dayNumber);
+            }
+        };
+        
+        return e(
+            'div',
+            {
+                className: 'day-box' + (isUnlocked ? ' unlocked' : ''),
+                onClick: handleClick
+            },
+            '🎁 ' + dayNumber
+        );
+    }
+
+    function App() {
+        const [clickedDay, setClickedDay] = useState(null);
+        const closePopup = () => setClickedDay(null);
+
+        const unlockedDays = currentDay >= startDay && currentDay <= endDay 
+            ? currentDay - startDay + 1 
+            : (currentDay > endDay ? totalDays : 0);
+
+        const daysArray = Array.from({ length: totalDays }, (_, i) => i + 1);
+        
+        const surprises = [
+            "Your personal AI-powered Christmas Calendar! 🤖✨\nLet the digital magic begin! 🎄🔮\nP.S.: Check your email for something special! 📧💫",
+            "Flowers to brighten your day! 🌹💐\nAnd maybe something green and lovely... 👗✨\nCheck around you for real magic! 🎁💫",
+            "A beautiful green dress just for you! 👗✨\nAnd more flowers because you deserve them! 🌺🌸\nLook for something special nearby! 🎀💝",
+            "A magical surprise is coming your way! 🎁✨\nKeep your eyes open for something special! 🌟💫\nThe magic of Christmas is everywhere! 🎄💝",
+            "Ein deutsches Überraschung! 🇩🇪✨\nSomething special from Germany! 🎁💫\nCheck around for real Christmas magic! 🎄🌟"
+        ];
+
+        return e('div', { className: 'calendar-container' },
+            e('div', { className: 'santa' }, '🎅'),
+            e('h1', null, '✨ Christmas Calendar ✨'),
+            e('marquee', null, '🎄 Ho Ho Ho! Merry Christmas! Welcome to Santa\'s Digital Calendar! 🎄'),
+            e('p', null, '🎄 Open one magical gift each day from Dec 8 to Dec 12! 🎁'),
+            e('div', { className: 'days-grid' },
+                daysArray.map(d => 
+                    e(DayBox, {
+                        key: d,
+                        dayNumber: d,
+                        isUnlocked: d <= unlockedDays,
+                        onClick: setClickedDay
+                    })
+                )
+            ),
+            clickedDay !== null && e('div', { className: 'popup-backdrop', onClick: closePopup },
+                e('div', { className: 'popup', onClick: e => e.stopPropagation() },
+                    e('h2', null, '🎄 Day ' + clickedDay + ' Surprise! 🎄'),
+                    e('p', null, surprises[clickedDay - 1]),
+                    e('button', { onClick: closePopup }, '✨ Close ✨')
+                )
+            )
+        );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(e(App));
+})();
+</script>
+</body>
+</html>
